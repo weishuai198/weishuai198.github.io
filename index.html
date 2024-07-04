@@ -7,69 +7,63 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        #search-form {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-            margin: 0;
+            flex-direction: column;
+            align-items: flex-start;
         }
-        .search-container {
-            text-align: center;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .search-container h1 {
-            margin-bottom: 20px;
-        }
-        .search-box {
-            width: 300px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .search-button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #007bff;
-            color: #fff;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .search-button:hover {
-            background-color: #0056b3;
+        label, select, input {
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="search-container">
-        <h1>网盘资源搜索</h1>
-        <input type="text" id="searchQuery" class="search-box" placeholder="请输入关键词">
-        <br>
-        <button class="search-button" onclick="search()">搜索</button>
-    </div>
+    <h1>网盘资源搜索</h1>
+    <form id="search-form" onsubmit="return searchResources();">
+        <label for="keyword">搜索关键词:</label>
+        <input type="text" id="keyword" name="keyword" required>
+        
+        <label for="platform">选择网盘平台:</label>
+        <select id="platform" name="platform" required>
+            <option value="alipansou">阿里云盘</option>
+            <option value="baiduwangpan">百度网盘</option>
+            <option value="xunlei">迅雷网盘</option>
+            <option value="quark">夸克网盘</option>
+        </select>
+        
+        <button type="submit">搜索</button>
+    </form>
 
     <script>
-        function search() {
-            const query = document.getElementById('searchQuery').value;
-            if (query.trim() === "") {
-                alert("请输入关键词");
-                return;
-            }
-            const searchEngines = {
-                '阿里云盘': 'https://www.alipansou.com/search?k=',
-                '百度网盘': 'https://www.baidu.com/s?wd=',
-                '迅雷网盘': 'https://www.xunlei.com/search?keyword=',
-                '夸克网盘': 'https://www.quark.com/search?q='
-            };
+        function searchResources() {
+            const keyword = document.getElementById('keyword').value;
+            const platform = document.getElementById('platform').value;
+            let searchUrl = '';
 
-            for (let [name, url] of Object.entries(searchEngines)) {
-                window.open(url + encodeURIComponent(query), '_blank');
+            switch (platform) {
+                case 'alipansou':
+                    searchUrl = `https://www.alipansou.com/search?k=${encodeURIComponent(keyword)}`;
+                    break;
+                case 'baiduwangpan':
+                    searchUrl = `https://pan.baidu.com/s/${encodeURIComponent(keyword)}`;
+                    break;
+                case 'xunlei':
+                    searchUrl = `https://cloud.189.cn/search?searchValue=${encodeURIComponent(keyword)}`;
+                    break;
+                case 'quark':
+                    searchUrl = `https://pan.quark.cn/search/${encodeURIComponent(keyword)}`;
+                    break;
+                default:
+                    alert('请选择有效的平台');
+                    return false;
             }
+
+            window.open(searchUrl, '_blank');
+            return false;
         }
     </script>
 </body>
 </html>
+
